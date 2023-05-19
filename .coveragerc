@@ -1,0 +1,7 @@
+[run]
+source=inventoryAPI/, userAPI/
+omit=
+    .env
+    */migrations/*
+    */tests/*
+    */__init__.py
