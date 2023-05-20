@@ -10,10 +10,10 @@ class CategoryAdmin(admin.ModelAdmin):
 
 
 class ProductAdmin(admin.ModelAdmin):
-    list_display = ('name', 'price', 'category')
-    list_filter = ('category',)
-    search_fields = ('name', 'description')
-    ordering = ('name',)
+    list_display = ('name', 'price', 'category', 'company')
+    list_filter = ('category', 'company')
+    search_fields = ('name', 'description', 'company')
+    ordering = ('name', 'price', 'company')
     
     
 admin.site.register(Category, CategoryAdmin)

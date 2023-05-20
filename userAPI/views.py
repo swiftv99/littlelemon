@@ -1,6 +1,7 @@
 from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
+from rest_framework.permissions import IsAuthenticated
 
 from userAPI.models import User
 from userAPI.serializers import RegisterUserSerializer, ChangePasswordSerializer, CreateReadUserSerializer, UpdateUserSerializer
@@ -11,11 +12,10 @@ class UserViewSet(mixins.RetrieveModelMixin,
                    mixins.DestroyModelMixin,
                    mixins.ListModelMixin,
                    GenericViewSet):
-    # permission_classes = [IsStaff | IsNotStaff]
+    permission_classes = [IsAuthenticated]
     # filter_backends = [DjangoFilterBackend, OrderingFilter]
     # filterset_class = UserFilter
     # ordering_fields = ['id']
-
 
     def get_queryset(self):
         queryset = User.objects.all()

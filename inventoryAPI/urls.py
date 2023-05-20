@@ -5,8 +5,8 @@ from inventoryAPI.views import ProductViewSet, CategoryViewSet
 
 
 router = SimpleRouter()
-router.register(r'products', ProductViewSet, basename='product'),
 router.register(r'categories', CategoryViewSet, basename='category'),
+router.register(r'products', ProductViewSet, basename='product'),
 
 urlpatterns = [
     path('', include(router.urls)),    
