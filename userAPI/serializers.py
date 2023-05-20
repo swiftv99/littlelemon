@@ -3,48 +3,37 @@ from django.contrib.auth.password_validation import validate_password
 
 from userAPI.models import User
 
-
-# User model
-class CreateReadUserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ['url', 'id', 'username', 'email', 'role']
-
-
-class UpdateUserSerializer(serializers.ModelSerializer):
-    email = serializers.EmailField(required=True)
-
-    class Meta:
-        model = User
-        fields = ['url', 'id', 'email', 'role']
+class BaseUserSerializer(serializers.ModelSerializer):
 
     def validate_email(self, value):
         user = self.context['request'].user
         if User.objects.exclude(pk=user.pk).filter(email=value).exists():
             raise serializers.ValidationError({"email": "This email is already in use."})
         return value
-
-
-
-
-
-
-# class UserSerializer(serializers.ModelSerializer):
-#     password = serializers.CharField(write_only=True, min_length=6, max_length=128)
-
-#     class Meta:
-#         model = User
-#         fields = ('username', 'email', 'role', 'password')
-
-#     def create(self, validated_data):
-#         user = User.objects.create_user(**validated_data)
-#         return user
     
+    
+class RetrieveUpdateDestroyUserSerializer(BaseUserSerializer):
+    class Meta:
+        model = User
+        fields = ['url', 'id', 'username', 'email', 'role']
+        
+    def get_fields(self):
+        fields = super().get_fields()
+        fields['role'].read_only = True 
+        return fields
+
+
+class AdminRetrieveUpdateDestroyUserSerializer(BaseUserSerializer):
+    # email = serializers.EmailField(required=True)
+
+    class Meta:
+        model = User
+        fields = ['url', 'id', 'username', 'email', 'role']
+
     
 class RegisterUserSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
     password2 = serializers.CharField(write_only=True, required=True)
-
     class Meta:
         model = User
         fields = ['url', 'username', 'email', 'role', 'password', 'password2']
@@ -60,7 +49,17 @@ class RegisterUserSerializer(serializers.ModelSerializer):
         user.save()
         return user
 
+    def get_fields(self):
+        fields = super().get_fields()
+        user = self.context['request'].user
 
+        # Exclude 'admin' option for anonymous users
+        if not user.is_authenticated:
+            fields['role'].choices = [choice for choice in User.ROLE_CHOICES if choice[0] != 'admin']
+
+        return fields
+    
+    
 class ChangePasswordSerializer(serializers.ModelSerializer):
     old_password = serializers.CharField(write_only=True, required=True)
     new_password = serializers.CharField(write_only=True, required=True, validators=[validate_password])
@@ -83,16 +82,6 @@ class ChangePasswordSerializer(serializers.ModelSerializer):
         if not user.check_password(value):
             raise serializers.ValidationError("Old password is not correct") 
         return value
-
-    # def update(self, instance, validated_data):
-    #     user = self.context['request'].user
-
-    #     if not (user.is_staff or user.pk == instance.pk):
-    #         raise serializers.ValidationError({"authorize": "You dont have permission for this user."})
-
-    #     instance.set_password(validated_data['new_password'])
-    #     instance.save()
-    #     return instance
     
     def save(self):
         user = self.context['request'].user

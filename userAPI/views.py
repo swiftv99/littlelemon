@@ -2,9 +2,12 @@ from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework.filters import SearchFilter, OrderingFilter
 
 from userAPI.models import User
-from userAPI.serializers import RegisterUserSerializer, ChangePasswordSerializer, CreateReadUserSerializer, UpdateUserSerializer
+from userAPI.serializers import RetrieveUpdateDestroyUserSerializer, AdminRetrieveUpdateDestroyUserSerializer, \
+    RegisterUserSerializer, ChangePasswordSerializer
 
 
 class UserViewSet(mixins.RetrieveModelMixin,
@@ -13,9 +16,9 @@ class UserViewSet(mixins.RetrieveModelMixin,
                    mixins.ListModelMixin,
                    GenericViewSet):
     permission_classes = [IsAuthenticated]
-    # filter_backends = [DjangoFilterBackend, OrderingFilter]
-    # filterset_class = UserFilter
-    # ordering_fields = ['id']
+    filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
+    search_fields = ['username', 'email']
+    ordering_fields = ['username', 'email']
 
     def get_queryset(self):
         queryset = User.objects.all()
@@ -23,12 +26,11 @@ class UserViewSet(mixins.RetrieveModelMixin,
         if not is_staff:
             queryset = queryset.filter(id=self.request.user.id)
         return queryset
-
-
+    
     def get_serializer_class(self):
-        if self.action in ["update", "partial_update"]:
-            return UpdateUserSerializer
-        return CreateReadUserSerializer
+        if self.request.user.is_staff:
+            return AdminRetrieveUpdateDestroyUserSerializer
+        return RetrieveUpdateDestroyUserSerializer
     
     
 class RegisterAPIView(generics.GenericAPIView):
