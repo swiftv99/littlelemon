@@ -1,12 +1,38 @@
-from rest_framework import status, viewsets
+from rest_framework import status, mixins, generics
 from rest_framework.response import Response
-# from rest_framework.views import APIView
-from rest_framework.generics import GenericAPIView
+from rest_framework.viewsets import GenericViewSet
+from django.contrib.auth import authenticate
 
-from .serializers import UserSerializer, RegisterUserSerializer
+from .models import User
+from .serializers import RegisterUserSerializer, ChangePasswordSerializer, CreateReadUserSerializer, UpdateUserSerializer
 
 
-class RegisterAPIView(GenericAPIView):
+class UserViewSet(mixins.RetrieveModelMixin,
+                   mixins.UpdateModelMixin,
+                   mixins.DestroyModelMixin,
+                   mixins.ListModelMixin,
+                   GenericViewSet):
+    # permission_classes = [IsStaff | IsNotStaff]
+    # filter_backends = [DjangoFilterBackend, OrderingFilter]
+    # filterset_class = UserFilter
+    # ordering_fields = ['id']
+
+
+    def get_queryset(self):
+        queryset = User.objects.all()
+        is_staff = getattr(self.request.user, "is_staff", None)
+        if not is_staff:
+            queryset = queryset.filter(id=self.request.user.id)
+        return queryset
+
+
+    def get_serializer_class(self):
+        if self.action in ["update", "partial_update"]:
+            return UpdateUserSerializer
+        return CreateReadUserSerializer
+    
+    
+class RegisterAPIView(generics.GenericAPIView):
     serializer_class = RegisterUserSerializer
     
     def post(self, request):
@@ -17,15 +43,13 @@ class RegisterAPIView(GenericAPIView):
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
-# class UserRegistrationAPIView(APIView):
-#     def post(self, request):
-#         serializer = UserSerializer(data=request.data)
-#         if serializer.is_valid():
-#             user = serializer.save()
-#             return Response({'token': user.auth_token.key}, status=status.HTTP_201_CREATED)
-#         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-# class ProductViewSet(viewsets.ModelViewSet):
-#     # queryset = User.objects.all()
-#     serializer_class = UserSerializer
+class ChangePasswordAPIView(generics.UpdateAPIView):
+    # permission_classes = [IsAuthenticated]
+    serializer_class = ChangePasswordSerializer
+    
+    def put(self, request):
+        serializer = self.serializer_class(data=request.data, context={'request': request})
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'message': 'Password changed successfully.'}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

@@ -26,6 +26,13 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(_('email address'), unique=True, error_messages={
             "unique": _("A user with that email already exists.")})
     
+    ROLE_CHOICES = [
+        ('admin', 'Admin'),
+        ('client', 'Client'),
+        ('company', 'Company'),
+    ]
+    role = models.CharField(max_length=10, choices=ROLE_CHOICES, null=True)
+    
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
 
