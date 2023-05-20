@@ -38,6 +38,10 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'django_filters',
+    'crispy_forms',
+    "crispy_bootstrap5",
+    # apps
     'inventoryAPI',
     'userAPI',
 ]
@@ -145,3 +149,7 @@ REST_FRAMEWORK = {
         'user': '10/minute',
     },
 }
+
+# To enhance the presentation of the filter forms in HTML views
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"
