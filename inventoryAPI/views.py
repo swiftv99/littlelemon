@@ -2,14 +2,16 @@ from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
-from .filters import ProductFilter
-from .models import Product, Category
-from .serializers import ProductSerializer, CategorySerializer
+from inventoryAPI.filters import ProductFilter
+from inventoryAPI.models import Product, Category
+from inventoryAPI.permissions import IsStaffOrReadOnly
+from inventoryAPI.serializers import ProductSerializer, CategorySerializer
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
+    permission_classes = [IsStaffOrReadOnly]
     filter_backends = [DjangoFilterBackend, SearchFilter, OrderingFilter]
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']

@@ -1,5 +1,6 @@
 from django.contrib import admin
-from .models import Category, Product
+
+from inventoryAPI.models import Category, Product
 
 
 class CategoryAdmin(admin.ModelAdmin):

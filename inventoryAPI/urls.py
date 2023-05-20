@@ -1,7 +1,7 @@
 from django.urls import path, include
 from rest_framework.routers import SimpleRouter
 
-from .views import ProductViewSet, CategoryViewSet
+from inventoryAPI.views import ProductViewSet, CategoryViewSet
 
 
 router = SimpleRouter()

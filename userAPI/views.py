@@ -1,10 +1,9 @@
 from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
-from django.contrib.auth import authenticate
 
-from .models import User
-from .serializers import RegisterUserSerializer, ChangePasswordSerializer, CreateReadUserSerializer, UpdateUserSerializer
+from userAPI.models import User
+from userAPI.serializers import RegisterUserSerializer, ChangePasswordSerializer, CreateReadUserSerializer, UpdateUserSerializer
 
 
 class UserViewSet(mixins.RetrieveModelMixin,
