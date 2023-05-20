@@ -5,7 +5,7 @@ from .models import Product, Category
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = Category
-        fields = ('id', 'name',)
+        fields = ('url', 'id', 'name')
 
 
 class ProductSerializer(serializers.ModelSerializer):
@@ -13,7 +13,7 @@ class ProductSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Product
-        fields = ('id', 'name', 'price', 'category')
+        fields = ('url', 'id', 'name', 'price', 'description', 'category')
 
     def validate_price(self, value):
         if value <= 0:
