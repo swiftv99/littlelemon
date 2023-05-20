@@ -23,7 +23,8 @@ class User(AbstractBaseUser, PermissionsMixin):
             "unique": _("A user with that username already exists."),
         },
     )
-    email = models.EmailField(_('email address'), unique=True)
+    email = models.EmailField(_('email address'), unique=True, error_messages={
+            "unique": _("A user with that email already exists.")})
     
     is_staff = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
