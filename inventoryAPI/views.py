@@ -2,12 +2,22 @@ from rest_framework import viewsets
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
+# For caching
+from django.conf import settings
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
+from django.utils.decorators import method_decorator
+from django.views.decorators.cache import cache_page
+
 from inventoryAPI.filters import ProductFilter
 from inventoryAPI.models import Product, Category
 from inventoryAPI.permissions import IsStaffOrReadOnly, IsStaff, IsCompany, IsClient
 from inventoryAPI.serializers import CategorySerializer, ProductSerializer, AdminProductSerializer
 
 
+CACHE_TTL = getattr(settings, 'CACHE_TTL', DEFAULT_TIMEOUT)
+
+
+@method_decorator(cache_page(CACHE_TTL), name='dispatch')  
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
@@ -17,7 +27,8 @@ class CategoryViewSet(viewsets.ModelViewSet):
     search_fields = ['name']
     ordering_fields = ['name', 'created_at']
     
-    
+
+@method_decorator(cache_page(CACHE_TTL), name='dispatch')  
 class ProductViewSet(viewsets.ModelViewSet):
     serializer_class = ProductSerializer
     permission_classes = [IsStaff | IsCompany | IsClient]

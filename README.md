@@ -2,6 +2,17 @@
 
 ## Available Endpoints
 
+### FileUploadAPI Endpoints
+- /books/
+- /books/<int:pk>/
+
+#### For Django Template View instead of Browsable API
+- /books/
+- /books/upload/
+- /books/<int:pk>/
+- /class/books/
+- /class/books/upload/
+
 ### InventoryAPI Endpoints
 - /categories/<int:pk>/
 - /products/<int:pk>/

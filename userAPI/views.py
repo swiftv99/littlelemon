@@ -2,12 +2,12 @@ from rest_framework import status, mixins, generics
 from rest_framework.response import Response
 from rest_framework.viewsets import GenericViewSet
 from rest_framework.permissions import IsAuthenticated
+
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 
 from userAPI.models import User
-from userAPI.serializers import RetrieveUpdateDestroyUserSerializer, AdminRetrieveUpdateDestroyUserSerializer, \
-    RegisterUserSerializer, ChangePasswordSerializer
+from userAPI.serializers import NonAdminUserSerializer, AdminUserSerializer, RegisterUserSerializer, ChangePasswordSerializer
 
 
 class UserViewSet(mixins.RetrieveModelMixin,
@@ -29,8 +29,8 @@ class UserViewSet(mixins.RetrieveModelMixin,
     
     def get_serializer_class(self):
         if self.request.user.is_staff:
-            return AdminRetrieveUpdateDestroyUserSerializer
-        return RetrieveUpdateDestroyUserSerializer
+            return AdminUserSerializer
+        return NonAdminUserSerializer
     
     
 class RegisterAPIView(generics.GenericAPIView):
@@ -45,7 +45,7 @@ class RegisterAPIView(generics.GenericAPIView):
 
 
 class ChangePasswordAPIView(generics.UpdateAPIView):
-    # permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated]
     serializer_class = ChangePasswordSerializer
     
     def put(self, request):

@@ -12,7 +12,7 @@ class BaseUserSerializer(serializers.ModelSerializer):
         return value
     
     
-class RetrieveUpdateDestroyUserSerializer(BaseUserSerializer):
+class NonAdminUserSerializer(BaseUserSerializer):
     class Meta:
         model = User
         fields = ['url', 'id', 'username', 'email', 'role']
@@ -23,7 +23,7 @@ class RetrieveUpdateDestroyUserSerializer(BaseUserSerializer):
         return fields
 
 
-class AdminRetrieveUpdateDestroyUserSerializer(BaseUserSerializer):
+class AdminUserSerializer(BaseUserSerializer):
     # email = serializers.EmailField(required=True)
 
     class Meta:

@@ -6,11 +6,14 @@ from rest_framework_simplejwt.views import (
     TokenVerifyView,
 )
 
+from fileuploadAPI.urls import router as fileupload_router
 from inventoryAPI.urls import router as inventory_router
 from userAPI.views import RegisterAPIView, ChangePasswordAPIView, UserViewSet
 
+
 router = DefaultRouter()
 
+router.registry.extend(fileupload_router.registry)
 router.registry.extend(inventory_router.registry)
 router.register(r'users', UserViewSet, basename="user")
 
