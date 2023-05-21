@@ -1,8 +1,6 @@
 from rest_framework import permissions
 
 
-CREATE_METHOD = 'POST'
-
 class IsStaffOrReadOnly(permissions.BasePermission):
 
     def has_permission(self, request, view):
