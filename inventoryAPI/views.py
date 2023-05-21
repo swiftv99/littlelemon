@@ -19,7 +19,6 @@ class CategoryViewSet(viewsets.ModelViewSet):
     
     
 class ProductViewSet(viewsets.ModelViewSet):
-    # queryset = Product.objects.all()
     serializer_class = ProductSerializer
     permission_classes = [IsStaff | IsCompany | IsClient]
     
@@ -46,3 +45,19 @@ class ProductViewSet(viewsets.ModelViewSet):
             serializer.save(company=self.request.user)
         serializer.save()
         
+    def perform_update(self, serializer):
+        if not self.request.user.is_staff:
+            serializer.save(company=self.request.user)
+        serializer.save()
+        
+    # @action(detail=True, methods=['get'])
+    # def download_image(self, request, pk=None):
+    #     product = self.get_object()
+    #     if product.image:
+    #         file_path = product.image.path
+    #         with open(file_path, 'rb') as file:
+    #             response = HttpResponse(file.read(), content_type='image/jpeg')
+    #             response['Content-Disposition'] = 'attachment; filename=' + product.image.name
+    #             return response
+    #     else:
+    #         return Response({'error': 'No image available for this product.'})
