@@ -1,21 +1,12 @@
-# import requests
-# from rest_framework.views import APIView
-# from rest_framework.response import Response
-
-# class GitHubRepositoriesView(APIView):
-#     def get(self, request):
-#         access_token = request.query_params.get('access_token')
-#         headers = {'Authorization': f'token {access_token}'}
-#         url = 'https://api.github.com/swiftv99/repos'
-#         response = requests.get(url, headers=headers)
-#         repositories = response.json()
-#         return Response(repositories)
-
-
 from django.shortcuts import render
+from rest_framework.decorators import permission_classes
+from rest_framework.permissions import IsAuthenticated
+
 import requests
+from github import Github, GithubException
 
 
+@permission_classes([IsAuthenticated])
 def github(request):
     search_result = {}
     if 'username' in request.GET:
@@ -29,4 +20,31 @@ def github(request):
             'limit': response.headers['X-RateLimit-Limit'],
             'remaining': response.headers['X-RateLimit-Remaining'],
         }
+    return render(request, 'thirdpartyAPI/github.html', {'search_result': search_result})
+
+
+@permission_classes([IsAuthenticated])
+def github_client(request):
+    search_result = {}
+    if 'username' in request.GET:
+        username = request.GET['username']
+        client = Github()
+
+        try:
+            user = client.get_user(username)
+            search_result['name'] = user.name
+            search_result['login'] = user.login
+            search_result['public_repos'] = user.public_repos
+            search_result['success'] = True
+        except GithubException as ge:
+            search_result['message'] = ge.data['message']
+            search_result['success'] = False
+
+        rate_limit = client.get_rate_limit()
+        core_rate_limit = rate_limit.core
+        search_result['rate'] = {
+            'limit': core_rate_limit.limit,
+            'remaining': core_rate_limit.remaining,
+        }
+
     return render(request, 'thirdpartyAPI/github.html', {'search_result': search_result})

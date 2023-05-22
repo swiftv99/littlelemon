@@ -26,5 +26,5 @@ urlpatterns = [
     path('auth/login/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     path('auth/login/verify/', TokenVerifyView.as_view(), name='token_verify'),
     path('github/', thirdparytAPI_views.github, name='github'),  
-    # path('github/client/', thirdparytAPI_views.github_client, name='github_client'),
+    path('github/client/', thirdparytAPI_views.github_client, name='github_client'),
 ]

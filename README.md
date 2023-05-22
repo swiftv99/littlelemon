@@ -17,6 +17,10 @@
 - /categories/<int:pk>/
 - /products/<int:pk>/
 
+### ThirdPartyAPI Endpoints
+- /github/
+- /github/client/
+
 ### UserAPI Endpoints
 - /users/<int:pk>/
 
