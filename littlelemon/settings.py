@@ -167,9 +167,9 @@ REST_FRAMEWORK = {
     },
 }
 
-SIMPLE_JWT = {
-   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-}
+# SIMPLE_JWT = {
+#    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+# }
 
 # To enhance the view of forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -178,9 +178,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Cache time to live is 5 minutes
 CACHE_TTL = 60 * 5
 
-# CACHES = {
-#     'default': {
-#         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-#         'LOCATION': '127.0.0.1:11211',
-#     }
-# }
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+        'LOCATION': '127.0.0.1:11211',
+    }
+}
