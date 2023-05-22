@@ -8,7 +8,7 @@ from fileuploadAPI.models import Book
     
 def book_list(request):
     books = Book.objects.all()
-    return render(request, 'book_list.html', {'books': books})
+    return render(request, 'fileuploadAPI/book_list.html', {'books': books})
 
 
 def upload_book(request):
@@ -19,7 +19,7 @@ def upload_book(request):
             return redirect('book_list')
     else:
         form = BookForm()
-    return render(request, 'upload_book.html', {'form': form})
+    return render(request, 'fileuploadAPI/upload_book.html', {'form': form})
 
 
 def delete_book(request, pk):
@@ -31,7 +31,7 @@ def delete_book(request, pk):
 
 class BookListView(ListView):
     model = Book
-    template_name = 'class_book_list.html'
+    template_name = 'fileuploadAPI/class_book_list.html'
     context_object_name = 'books'
     
     
@@ -39,7 +39,7 @@ class UploadBookView(CreateView):
     model = Book
     form_class = BookForm
     success_url = reverse_lazy('class_book_list')
-    template_name = 'upload_book.html'
+    template_name = 'fileuploadAPI/upload_book.html'
     
     
 # Without BookForm class
@@ -47,4 +47,4 @@ class UploadBookView(CreateView):
 #     model = Book
 #     fields = ['title', 'author', 'pdf', 'cover']
 #     success_url = reverse_lazy('class_book_list')
-#     template_name = 'upload_book.html'
+#     template_name = 'fileuploadAPI/upload_book.html'

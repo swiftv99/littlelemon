@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/4.2/ref/settings/
 from pathlib import Path
 from datetime import timedelta
 import os
+from decouple import config
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 # BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,13 +23,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/4.2/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-ga^poa=qg^j@7!-0jtchq%&6^w1!wtk7b5j!u&knh(sxsb7$=m'
+SECRET_KEY = config('SECRET_KEY', default='s3cr3t_k3y')
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
 ALLOWED_HOSTS = []
-
 
 # Application definition
 
@@ -50,6 +50,7 @@ INSTALLED_APPS = [
     # apps
     'fileuploadAPI',
     'inventoryAPI',
+    'thirdpartyAPI',
     'userAPI',
 ]
 
@@ -166,10 +167,9 @@ REST_FRAMEWORK = {
     },
 }
 
-# SIMPLE_JWT = {
-#    'AUTH_HEADER_TYPES': ('JWT',),
-#    'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
-# }
+SIMPLE_JWT = {
+   'ACCESS_TOKEN_LIFETIME': timedelta(days=1),
+}
 
 # To enhance the view of forms
 CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
@@ -178,9 +178,9 @@ CRISPY_TEMPLATE_PACK = "bootstrap5"
 # Cache time to live is 5 minutes
 CACHE_TTL = 60 * 5
 
-CACHES = {
-    'default': {
-        'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
-        'LOCATION': '127.0.0.1:11211',
-    }
-}
+# CACHES = {
+#     'default': {
+#         'BACKEND': 'django.core.cache.backends.memcached.PyMemcacheCache',
+#         'LOCATION': '127.0.0.1:11211',
+#     }
+# }
