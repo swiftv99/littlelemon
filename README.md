@@ -35,3 +35,5 @@
 
 ## Command to run all test and make report in html format
 - coverage run manage.py test && coverage report && coverage html
+
+- by Uktamjon
